@@ -73,7 +73,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 // @desc    Get User data
 // @route   GET /api/users/me
-// access   Public
+// access   private
 const getUser = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Current User Data" });
 });
