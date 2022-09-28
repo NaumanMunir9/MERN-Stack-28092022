@@ -18,14 +18,34 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // check if the user exists in the db
-  const userExists = await userModel.findOne(email);
+  const userExists = await userModel.findOne({ email });
 
   if (userExists) {
     res.status(400);
     throw new Error("User already exists.");
   }
 
-  res.status(200).json({ message: "User has been Registered" });
+  // hash user password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  // create user using hashedPassword
+  const user = await userModel.create({
+    name,
+    email,
+    password: hashedPassword,
+  });
+
+  if (user) {
+    res.status(201).json({
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid User data");
+  }
 });
 
 // @desc    Login User
