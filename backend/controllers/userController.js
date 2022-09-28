@@ -17,7 +17,14 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error("All are required fields.");
   }
 
-  // check if the user exits in the db
+  // check if the user exists in the db
+  const userExists = await userModel.findOne(email);
+
+  if (userExists) {
+    res.status(400);
+    throw new Error("User already exists.");
+  }
+
   res.status(200).json({ message: "User has been Registered" });
 });
 
