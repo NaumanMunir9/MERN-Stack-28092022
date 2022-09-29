@@ -2,6 +2,7 @@
 const asyncHandler = require("express-async-handler");
 // models
 const GoalModel = require("../models/goalModel");
+const UserModel = require("../models/userModel");
 
 /**
  * ----------------------------------------------------------------------------
@@ -48,6 +49,19 @@ const updateGoal = asyncHandler(async (req, res) => {
     throw new Error(`Couldn't find the specified goal: ${req.params.id}`);
   }
 
+  // check is the user is authorized to update goals
+  const user = await UserModel.findById(req.user.id);
+  if (!user) {
+    res.status(401);
+    throw new Error("Unauthorized User. User not found.");
+  }
+
+  // check if the logged-in user is authorized
+  if (goal.user.toString() !== user.id) {
+    res.status(401);
+    throw new Error("Token is invalid. User is not Authorized");
+  }
+
   const goalUpdated = await GoalModel.findByIdAndUpdate(
     req.params.id,
     req.body,
@@ -70,6 +84,19 @@ const deleteGoal = asyncHandler(async (req, res) => {
   if (!goal) {
     res.status(400);
     throw new Error(`Couldn't find the specified goal: ${req.params.id}`);
+  }
+
+  // check is the user is authorized to update goals
+  const user = await UserModel.findById(req.user.id);
+  if (!user) {
+    res.status(401);
+    throw new Error("Unauthorized User. User not found.");
+  }
+
+  // check if the logged-in user is authorized
+  if (goal.user.toString() !== user.id) {
+    res.status(401);
+    throw new Error("Token is invalid. User is not Authorized");
   }
 
   await GoalModel.findByIdAndDelete(req.params.id);
