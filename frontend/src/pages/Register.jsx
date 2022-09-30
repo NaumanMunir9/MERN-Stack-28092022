@@ -46,7 +46,7 @@ export default function Register() {
     e.preventDefault();
 
     if (password !== password2) {
-      toast.error("Password do not match. Try again!");
+      toast.error("Passwords do not match. Try again!");
     } else {
       const userData = {
         name,
