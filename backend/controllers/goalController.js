@@ -50,14 +50,13 @@ const updateGoal = asyncHandler(async (req, res) => {
   }
 
   // check is the user is authorized to update goals
-  const user = await UserModel.findById(req.user.id);
-  if (!user) {
+  if (!req.user) {
     res.status(401);
     throw new Error("Unauthorized User. User not found.");
   }
 
   // check if the logged-in user is authorized
-  if (goal.user.toString() !== user.id) {
+  if (goal.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("Token is invalid. User is not Authorized");
   }
@@ -87,14 +86,13 @@ const deleteGoal = asyncHandler(async (req, res) => {
   }
 
   // check is the user is authorized to update goals
-  const user = await UserModel.findById(req.user.id);
-  if (!user) {
+  if (!req.user) {
     res.status(401);
     throw new Error("Unauthorized User. User not found.");
   }
 
   // check if the logged-in user is authorized
-  if (goal.user.toString() !== user.id) {
+  if (goal.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("Token is invalid. User is not Authorized");
   }
